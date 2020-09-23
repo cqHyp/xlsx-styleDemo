@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-style@0.8.13/dist/jszip.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-style@0.8.13/dist/cpexcel.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-style@0.8.13/dist/ods.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.js"></script>
+    <script src="./xlsx.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/xlsx.js"></script>
+
+    <style>
+        #customTable td {
+            white-space: nowrap;
+            word-break: keep-all;
+            border-left: 1px solid #ccc;
+            border-right: none;
+        }
+
+        #customTable tr>td:first-child {
+            border-left: 1px solid #ccc;
+        }
+
+        .data-tr td {
+            padding: 7px 5px 7px 5px;
+        }
+
+        .data-tr:hover {
+            background: #4D4E55 !important;
+        }
+
+        .data-tr:hover td {
+            color: #fff;
+        }
+
+        .thead-tr th {
+            overflow: hidden;
+            position: relative;
+            white-space: pre;
+            padding: 7px 6px 7px 6px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #fff;
+            line-height: 15px;
+            border-left: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .thead-tr td {
+            overflow: hidden;
+            position: relative;
+            white-space: pre;
+            padding: 7px 6px 7px 6px;
+            font-size: 12px;
+            font-weight: normal;
+            background: #fff;
+            /* border: 1px solid #ccc; */
+            border-left: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            line-height: 15px;
+        }
+
+        .date-td {
+            width: 60px;
+        }
+
+        .data-thead-tr td {
+            width: 60px;
+        }
+
+        .header-date-td {
+            text-align: center;
+        }
+
+        tr.jqgrow td {
+            font-weight: normal;
+            overflow: hidden;
+            white-space: nowrap;
+            word-break: break-all;
+            padding: 0 6px 0 6px !important;
+            border-bottom: 1px solid #ccc;
+            height: 30px;
+            padding-right: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="exportExcel()">导出</button>
+    <table id="customTable" class="ui-jqgrid-btable" style="border-collapse: collapse;width: 100%;table-layout: fixed;">
+        <thead>
+            <tr class="thead-tr">
+                <td colspan="6"
+                    style="border-top: 1px solid transparent;border-right: 1px solid transparent;border-left: 1px solid transparent;"
+                    id="fullName" class="ui-th-column ui-th-ltr">xxx-xxxx</td>
+            </tr>
+            <tr class="thead-tr">
+                <td colspan="6" style="border-left: 1px solid transparent;border-right: 1px solid transparent;"
+                    class="ui-th-column ui-th-ltr">
+                    <div style="text-align: center;">
+                        <h3 style="font-size: 16px;font-weight: bold"><span style="font-size: 16px;"
+                                id="type">首检</span>记录表
+                        </h3>
+                    </div>
+                </td>
+            </tr>
+            <tr class="thead-tr">
+                <th>设备名称</th>
+                <td id="machineName" class="ui-th-column ui-th-ltr">1#</td>
+                <th>产品名称</th>
+                <td id="productName" class="ui-th-column ui-th-ltr">矿泉水瓶</td>
+                <th>单模产量</th>
+                <td style="border-right: 1px solid #ccc;" id="output" class="ui-th-column ui-th-ltr">1</td>
+            </tr>
+            <tr class="thead-tr">
+                <th>计划单号</th>
+                <td id="planNo" class="ui-th-column ui-th-ltr">P200811016</td>
+                <th>订单编号</th>
+                <td id="orderNo" class="ui-th-column ui-th-ltr"></td>
+                <th>型号规格</th>
+                <td style="border-right: 1px solid #ccc;" id="spec" class="ui-th-column ui-th-ltr"></td>
+            </tr>
+            <tr class="thead-tr" id="contentHeader">
+                <td colspan="6" style="background: rgba(0, 0, 0, 0.1);border-right: 1px solid #ccc;"
+                    class="ui-th-column ui-th-ltr">
+                    <div style="text-align: center;font-weight: bold;font-size: 15px;">检验内容</div>
+                </td>
+            </tr>
+            <tr class="thead-tr add-tr" id="horizonHead">
+                <th colspan="3">检验内容</th>
+                <th>检验标准</th>
+                <th style="">第1件</th>
+                <th style="border-right: 1px solid #ccc;"></th>
+            </tr>
+            <tr class="jqgrow ui-row-ltr data-tr add-tr">
+                <td colspan="3" rowspan="1">外观检查</td>
+                <td>无杂色</td>
+                <td style="">√</td>
+                <td style="border-right: 1px solid #ccc;"></td>
+            </tr>
+            <tr class="jqgrow ui-row-ltr data-tr add-tr">
+                <td colspan="3" rowspan="1">尺寸检查</td>
+                <td></td>
+                <td style="">11mm</td>
+                <td style="border-right: 1px solid #ccc;"></td>
+            </tr>
+            <tr class="jqgrow ui-row-ltr data-tr add-tr">
+                <td colspan="3" rowspan="1">材质确认</td>
+                <td></td>
+                <td style="">√</td>
+                <td style="border-right: 1px solid #ccc;"></td>
+            </tr>
+            <tr class="jqgrow ui-row-ltr data-tr add-tr">
+                <td colspan="1" rowspan="4">结构尺寸检查</td>
+                <td colspan="2" rowspan="1">长度</td>
+                <td></td>
+                <td style=""></td>
+                <td style="border-right: 1px solid #ccc;"></td>
+            </tr>
+            <tr class="jqgrow ui-row-ltr data-tr add-tr">
+                <td colspan="2" rowspan="1">宽度</td>
+                <td></td>
+                <td style=""></td>
+                <td style="border-right: 1px solid #ccc;"></td>
+            </tr>
+            <tr class="jqgrow ui-row-ltr data-tr add-tr">
+                <td colspan="1" rowspan="2">其它尺寸</td>
+                <td colspan="1" rowspan="1">结构件一：长度</td>
+                <td></td>
+                <td style=""></td>
+                <td style="border-right: 1px solid #ccc;"></td>
+            </tr>
+            <tr class="jqgrow ui-row-ltr data-tr add-tr">
+                <td colspan="1" rowspan="1">结构件一：宽度</td>
+                <td></td>
+                <td style=""></td>
+                <td style="border-right: 1px solid #ccc;"></td>
+            </tr>
+            <tr class="jqgrow ui-row-ltr data-tr add-tr">
+                <td colspan="3" rowspan="1">表面粗糙度</td>
+                <td></td>
+                <td style=""></td>
+                <td style="border-right: 1px solid #ccc;"></td>
+            </tr>
+        </thead>
+
+        <tbody id="customBody">
+        </tbody>
+        <tfoot>
+            <tr class="thead-tr">
+                <td colspan="6" style="background: rgba(0, 0, 0, 0.1);border-right: 1px solid #ccc;"
+                    class="ui-th-column ui-th-ltr">
+                    <div style="text-align: center;font-weight: bold;font-size: 15px;">最终结论</div>
+                </td>
+            </tr>
+            <tr class="thead-tr">
+                <th>检验结论</th>
+                <td id="result" class="ui-th-column ui-th-ltr">合格</td>
+                <th>检验人</th>
+                <td id="modifyUserName" class="ui-th-column ui-th-ltr">aaa</td>
+                <th>检验时间</th>
+                <td style="border-right: 1px solid #ccc;" id="statDate" class="ui-th-column ui-th-ltr">2020-08-17 15:24
+                </td>
+            </tr>
+            <tr class="thead-tr" id="auditRow" style="display: none;">
+                <th>审核结果</th>
+                <td id="auditResult" class="ui-th-column ui-th-ltr"></td>
+                <th>审核人</th>
+                <td id="auditUserName" class="ui-th-column ui-th-ltr"></td>
+                <th>审核</th>
+                <td id="auditDate" class="ui-th-column ui-th-ltr"></td>
+            </tr>
+            <tr class="thead-tr">
+                <th>备注</th>
+                <td style="border-right: 1px solid #ccc;" id="remark" colspan="5" class="ui-th-column ui-th-ltr">1223333
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <script>
+        function exportExcel() {
+            sheetJSExportTable(document.getElementById("customTable"));
+        }
+
+        function sheetJSExportTable(table, name) {
+            var elt = table;
+            var wb = XLSX.utils.table_to_book(elt, { sheet: "Sheet JS", raw: true });
+            let range = XLSX.utils.decode_range(wb.Sheets['Sheet JS']['!ref']);
+            let borderStyle = {
+                top: {
+                    style: "thin",
+                    color: { rgb: "000000" }
+                },
+                bottom: {
+                    style: "thin",
+                    color: { rgb: "000000" }
+                },
+                left: {
+                    style: "thin",
+                    color: { rgb: "000000" }
+                },
+                right: {
+                    style: "thin",
+                    color: { rgb: "000000" }
+                }
+            }
+            wb.Sheets['Sheet JS']["!merges"].forEach(item => {
+                if (item.e.r == item.s.r && item.e.c != item.s.c) {
+                    // 列合并
+                    let R = item.s.r;
+                    let countLength = item.e.c - item.s.c;
+                    for (let i = item.s.c; i <= item.e.c; i++) {
+                        let cell = { c: i, r: R };
+                        let cell_ref = XLSX.utils.encode_cell(cell);
+                        if (!wb.Sheets['Sheet JS'][cell_ref]) {
+                            wb.Sheets['Sheet JS'][cell_ref] = { t: "s", v: "" };
+                        }
+                    }
+                } else if (item.e.c == item.s.c && item.e.r != item.s.r) {
+                    // 行合并
+                    let C = item.s.c;
+                    let countLength = item.e.r - item.s.r;
+                    for (let i = item.s.r; i <= item.e.r; i++) {
+                        let cell = { c: C, r: i };
+                        let cell_ref = XLSX.utils.encode_cell(cell);
+                        if (!wb.Sheets['Sheet JS'][cell_ref]) {
+                            wb.Sheets['Sheet JS'][cell_ref] = { t: "s", v: "" };
+                        }
+                    }
+                }
+            })
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                for (let R = range.s.r; R <= range.e.r; ++R) {
+                    let cell = { c: C, r: R };
+                    let cell_ref = XLSX.utils.encode_cell(cell);
+                    if (R == 4 || wb.Sheets['Sheet JS'][cell_ref].v == "最终结论") {
+                        wb.Sheets['Sheet JS'][cell_ref].s = {
+                            fill: {
+                                fgColor: {
+                                    rgb: "eeeeee"
+                                }
+                            },
+                            alignment: {
+                                horizontal: "center"
+                            },
+                            font: {
+                                name: "黑体",
+                                sz: "15",
+                                bold: true
+                            },
+                            border: borderStyle,
+                        };
+                    } else if (R == 1) {
+                        wb.Sheets['Sheet JS'][cell_ref].s = {
+                            alignment: {
+                                horizontal: "center",
+                                vertical: "center"
+                            },
+                            font: {
+                                name: "黑体",
+                                sz: "15",
+                                bold: true
+                            },
+                            border: borderStyle,
+                        };
+                    } else {
+                        if (wb.Sheets['Sheet JS'][cell_ref]) {
+                            wb.Sheets['Sheet JS'][cell_ref].s = {
+                                font: {
+                                    name: "黑体",
+                                    sz: "12"
+                                },
+                                border: borderStyle,
+                            };
+                        }
+                    }
+                }
+            }
+            var wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+            var wbout = XLSXX.write(wb, wopts);// 使用xlsx-style 写入
+            saveAs(new Blob([s2ab(wbout)], { type: "" }), "aa.xlsx")
+        }
+
+        function s2ab(s) {
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+    </script>
+</body>
+
+</html>
