@@ -248,6 +248,7 @@
                     color: { rgb: "000000" }
                 }
             }
+            wb.Sheets['Sheet JS']['!rows'] = [{ hpx: 150 }, { hpx: 50 }, { hpx: 50 }, { hpx: 50 }, { hpx: 50 }, { hpx: 50 }]
             wb.Sheets['Sheet JS']["!merges"].forEach(item => {
                 if (item.e.r == item.s.r && item.e.c != item.s.c) {
                     // 列合并
